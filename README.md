@@ -15,3 +15,4 @@ autocord.py - silly config to get unlimited discord loot boxes
 
 worms launcher - ngrok -> public ip & launches the game 
 
+installeverything... - script to set-up new linux boxes (sets up all my configs and such)
