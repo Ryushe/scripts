@@ -16,3 +16,6 @@ autocord.py - silly config to get unlimited discord loot boxes
 worms launcher - ngrok -> public ip & launches the game 
 
 installeverything... - script to set-up new linux boxes (sets up all my configs and such)
+
+switch pro - nintendo is a dogshit company, so this removes/adds the bt connection so the controller can reconnect
+- ya, so shitty that you cant RECONNECT once you dc
