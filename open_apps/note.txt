@@ -1,0 +1,2 @@
+everytheng will call main.sh
+cp template_open.sh to start editing

@@ -24,6 +24,6 @@ for group in "${ordered_groups[@]}"; do
   google-chrome-stable --profile-directory="Default" --new-window ${chrome_groups[$group]} &
   sleep 0.2
   if [[ "${movewindows[@]}" =~ "${group}" ]]; then
-    hyprctl dispatch movetoworkspace 21
+    hyprctl dispatch movetoworkspace 22
   fi
 done
