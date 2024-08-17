@@ -9,7 +9,11 @@ for app in "${apps[@]}"; do
   if pgrep -x "$app" >/dev/null; then
     echo "$app is already running."
   else
-    echo "$app is not running. Starting VMware..."
-    $app &
+    echo "$app is not running. Starting $app..."
+    if [[ $app -eq "obs" ]]; then
+      nohup obs --start >/dev/null 2>&1 &
+    else
+      $app &
+    fi
   fi
 done
