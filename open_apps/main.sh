@@ -45,7 +45,6 @@ open_app() {
       $app >/dev/null 2>&1 &
     fi
   fi
-  sleep 1
 
   if [ "$side" == "right" ]; then
     space=$right_space
@@ -54,6 +53,7 @@ open_app() {
   else
     space=$main_space # main default hehe
   fi
+  sleep 1.5
   hyprctl dispatch movetoworkspace $space
 }
 
