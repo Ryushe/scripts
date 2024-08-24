@@ -1,22 +1,22 @@
+# make a global file that allows for input of apps
 #!/bin/bash
+
+# Read arguments
 apps_main_str="$1"
 apps_left_str="$2"
 apps_right_str="$3"
 main_space="$4"
 left_space="$5"
 right_space="$6"
-files_str="$7"
+urls_str="$7"
 
-echo "opening all apps now"
 # Convert strings back to arrays
 IFS=' ' read -r -a main_apps <<<"$apps_main_str"
 IFS=' ' read -r -a left_apps <<<"$apps_left_str"
 IFS=' ' read -r -a right_apps <<<"$apps_right_str"
-IFS=' ' read -r -a url_files <<<"$files_str"
+IFS=' ' read -r -a urls <<<"$urls_str"
 
 declare -A apps
-declare -A urls
-
 apps[main]="${main_apps[@]}"
 apps[left]="${left_apps[@]}"
 apps[right]="${right_apps[@]}"
@@ -34,50 +34,28 @@ echo "Right space: $right_space"
 open_app() {
   local app=$1
   local side=$2
-  shift 2
-  local urls=("$@")
-
-  if [ "$app" == "google-chrome-stable" ]; then
+  if [ $app == "google-chrome-stable" ]; then
     echo "starting chrome wins RAHHH"
-    $app --profile-directory="Default" --new-window "${urls[@]}" &
-  elif [[ $app ]]; then
+    $app --profile-directory="Profile 1" --new-window "${urls[@]}" &
+  else
     if pgrep -x "$app" >/dev/null; then
       echo "$app is already running."
     else
       echo "$app is not running. Starting $app..."
       $app >/dev/null 2>&1 &
     fi
-  else
-    echo "no app for category $side"
   fi
 
-  if [[ "$side" == "right" && -n "$app" ]]; then
+  if [ "$side" == "right" ]; then
     space=$right_space
-  elif [[ "$side" == "left" && -n "$app" ]]; then
+  elif [ "$side" == "left" ]; then
     space=$left_space
-  elif [[ "$side" == "main" && -n "$app" ]]; then
+  else
     space=$main_space # main default hehe
   fi
   sleep 1.5
   hyprctl dispatch movetoworkspace $space
 }
-
-# handles chrome
-echo url_files = ${url_files[@]}
-for i in "${!url_files[@]}"; do
-  file="${url_files[$i]}"
-  if [[ -f "$file" ]]; then
-    # file_contents=$(<"$file")
-    mapfile -t file_contents <"$file"
-    side=${file_contents[0]}
-    urls[$i]=$(printf "%s " "${file_contents[@]:1}")
-    echo side = $side
-    echo urls = ${urls[$i]}
-    open_app "google-chrome-stable" "$side" ${urls[$i]}
-  else
-    echo "no urls in file ${file}"
-  fi
-done
 
 for side in "${!apps[@]}"; do
   echo "side $side:"

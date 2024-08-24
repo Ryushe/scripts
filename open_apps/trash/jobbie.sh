@@ -19,6 +19,7 @@ chrome_groups[group_3]="${group_3_urls[@]}"
 ordered_groups=("group_1" "group_2" "group_3")
 movewindows=("group_3")
 
+# godmode >/dev/null 2>&1 &
 for group in "${ordered_groups[@]}"; do
   echo "$group:"
   google-chrome-stable --profile-directory="Default" --new-window ${chrome_groups[$group]} &

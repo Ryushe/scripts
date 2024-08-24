@@ -1,0 +1,4 @@
+main
+https://chatgpt.com/
+https://aiapply.co/dashboard/job-hub?popup=true
+https://huggingface.co/chat/
