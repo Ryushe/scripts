@@ -1,18 +1,15 @@
 #!/bin/bash
 
-# just add apps to the bottom like "app1" "app2"
 main_apps=()
 left_apps=()
 right_apps=()
-# set space to 0 for current space
 main_space=3
 left_space=13
 right_space=23
-script_dir="$(dirname "$(realpath "$0")")"
-echo "Script directory: $script_dir"
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 files_list=($(ls "$script_dir" | grep "url.*\.txt"))
-echo $files_list
-files=$(printf "%s " "${script_dir}/${files_list[@]}") #Could make get any urls.txt in location
+files=$(printf "%s " "${files_list[@]}") #Could make get any urls.txt in location
+echo ${files}
 
 #so i can send the apps
 apps_main_str="${main_apps[*]}"

@@ -19,20 +19,22 @@ else
   echo "  * no spaces allowed in names unless wrapped in ''"
 fi
 
-echo "write alias to bashrc? [y/n]"
-read write_to_bashrc
-if [[ "$write_to_bashrc" == "y" ]]; then
-  if [[ -n $2 ]]; then
-    alias_name=$2
-    command="alias $alias_name='$script_dir/$2/$1'"
-  else # if folder name not specified create alias under script_dir with file name
-    echo "enter alias name"
-    read alias_name
-    command="alias $alias_name='$script_dir/$1'"
+if [[ -n "$1" ]]; then
+  echo "write alias ${1%.sh} to bashrc? [y/n]"
+  read write_to_bashrc
+  if [[ "$write_to_bashrc" == "y" ]]; then
+    if [[ -n $1 ]]; then
+      alias_name=${1%.sh}
+      command="alias $alias_name='$script_dir/$2/$1'"
+    else # if folder name not specified create alias under script_dir with file name
+      echo "enter alias name"
+      read alias_name
+      command="alias $alias_name='$script_dir/$1'"
+    fi
+    echo "writing alias $alias_name into the $HOME/.bash_aliases"
+    echo "$command" >>$HOME/.bash_aliases
+  else
+    echo "exiting..."
+    exit 1
   fi
-  echo "writing alias $alias_name into the $HOME/.bash_aliases"
-  echo "$command" >>$HOME/.bash_aliases
-else
-  echo "exiting..."
-  exit 1
 fi

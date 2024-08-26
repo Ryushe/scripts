@@ -22,7 +22,6 @@ apps[left]="${left_apps[@]}"
 apps[right]="${right_apps[@]}"
 
 # You can now access the arrays and spaces as needed
-echo "urls: ${urls[@]}"
 echo "Main apps: ${main_apps[@]}"
 echo "Left apps: ${left_apps[@]}"
 echo "Right apps: ${right_apps[@]}"
@@ -59,7 +58,10 @@ open_app() {
     space=$main_space # main default hehe
   fi
   sleep 1.5
-  hyprctl dispatch movetoworkspace $space
+  # if any space != 0 then move it to that space, if not keep it where it opens
+  if [[ $main_space -ne 0 || $left_space -ne 0 || $right_space -ne 0 ]]; then
+    hyprctl dispatch movetoworkspace $space
+  fi
 }
 
 # handles chrome
@@ -76,6 +78,7 @@ for i in "${!url_files[@]}"; do
     open_app "google-chrome-stable" "$side" ${urls[$i]}
   else
     echo "no urls in file ${file}"
+    echo "${urls[$i]}"
   fi
 done
 

@@ -4,8 +4,7 @@
 main_apps=()
 left_apps=()
 right_apps=()
-# set space to 0 for current space
-main_space=3
+main_space=0
 left_space=13
 right_space=23
 script_dir="$(dirname "$(realpath "$0")")"
