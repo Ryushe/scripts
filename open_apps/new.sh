@@ -2,8 +2,12 @@
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 if [[ $1 && $2 ]]; then
-  echo "making dir $2"
-  mkdir $2
+  if [[ ! -d $2 ]]; then
+    echo "making dir $2"
+    mkdir $2
+  else
+    echo "$2 exists already, not touching it"
+  fi
   echo "creating template named: $1"
   cp "template.sh" "$2/$1"
 elif [[ $1 ]]; then

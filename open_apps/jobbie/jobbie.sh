@@ -3,7 +3,7 @@
 # just add apps to the bottom like "app1" "app2"
 main_apps=()
 left_apps=()
-right_apps=()
+right_apps=("obsidian obsidian://open?vault=jobs&file=To%20learn%20(based%20off%20jobs)")
 # set space to 0 for current space
 main_space=2
 left_space=12
