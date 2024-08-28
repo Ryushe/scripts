@@ -25,11 +25,27 @@ or
 ex file: `important_urls.txt`  
 ex file contents:  
 ```
-left/right/main 
+Side options: left/right/main
+Optional: profile (after the side, see below for example)
+urls: make sure new line for each url
+```
+```
+left
+https://fitgirl-repacks.site/
+https://google.com
+
+or 
+
+main profile1
 https://fitgirl-repacks.site/
 https://google.com
 ```
-note: left/right/main determines which monitor to put it on so pick one  
+
+### Chrome instance notes: 
+* left/right/main determines which monitor to put it on so pick one  
+* profile is optional (no spaces allowed within the profile)
+  - profile will use default profile if not specified
+
 
 ## Helpful tips
 - monitors are gotten by hyprsome's monitor layout 

@@ -3,14 +3,18 @@
 main_apps=("vmware")
 left_apps=("obs")
 right_apps=()
-main_space=4
+main_space=0
 left_space=12
 right_space=24
 space=$main_space
-script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+script_dir="$(dirname "$(realpath "$0")")"
+echo "Script directory: $script_dir"
 files_list=($(ls "$script_dir" | grep "url.*\.txt"))
-files=$(printf "%s " "${files_list[@]}")
-# files=("urls_ai.txt" "urls_test.txt") #if want to specify manually
+echo "files: ${files_list[@]}"
+files=()
+for file in "${files_list[@]}"; do
+  files+=("${script_dir}/${file}")
+done
 
 #so i can send the apps
 apps_main_str="${main_apps[*]}"
