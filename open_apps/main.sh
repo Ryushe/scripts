@@ -35,19 +35,19 @@ echo "
 ########
 # Apps #
 ######## "
-sleep $main_sleep_time
 echo "Main apps: ${main_apps[@]}"
 echo "Left apps: ${left_apps[@]}"
 echo "Right apps: ${right_apps[@]}"
+sleep $main_sleep_time
 
 echo "
 ##########
 # Spaces #
 ########## "
-sleep $main_sleep_time
 echo "Main space: $main_space"
 echo "Left space: $left_space"
 echo "Right space: $right_space"
+sleep $main_sleep_time
 
 open_app() {
   local app=$1
@@ -94,7 +94,6 @@ echo "
 ########
 # Info #
 ######## "
-sleep $main_sleep_time
 # handles chrome
 echo url_files = ${url_files[@]}
 for i in "${!url_files[@]}"; do
@@ -110,6 +109,8 @@ for i in "${!url_files[@]}"; do
     fi
     urls[$i]=$(printf "%s " "${file_contents[@]:1}")
     echo urls = ${urls[$i]}
+    sleep $main_sleep_time
+
     echo "
 #########
 # Sides #
@@ -126,5 +127,4 @@ for side in "${!apps[@]}"; do
   echo "side $side:"
   app="${apps[$side]}"
   open_app "$app" "$side"
-
 done
