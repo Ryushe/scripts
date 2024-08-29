@@ -13,11 +13,15 @@ Some of the ways I use this program:
 - job searching (eg: linkedin(main), ai(main), resume_buliders(right))
 
 ## start:
-- run 
+1. run 
   - `./new.sh filename`
 or   
-- `./new.sh filename foldername` - makes folder to put sh into 
+2. `./new.sh filename foldername` - makes folder to put sh into 
   - helpful when want to use the url file feature
+3. open new script and edit the workspaces/apps to open
+4. If wanting chrome tabs, make file with the name `url` anywhere in the name and end with .txt to have opened (optional)
+  - each new file is a new chrome instance: `ex name: aiurls.txt`
+  - see more on this below
 
 ## making new chrome instances:  
 - every file that has `urls` and ends with `.txt` will be used 
@@ -46,6 +50,9 @@ https://google.com
 * profile is optional (no spaces allowed within the profile)
   - profile will use default profile if not specified
 
+## Obsidian
+* if want to open an obsidian use `obsidian (note-url)`
+  - this will open the note/vault you want to open 
 
 ## Helpful tips
 - monitors are gotten by hyprsome's monitor layout 
@@ -58,6 +65,9 @@ https://google.com
   - if not using hyprsome monitor management your workspaces repeat every # of monitors
     - ex: 2 monitors -> ws1=mon1 ws2=mon2 ws3=mon1 ws4=mon2.....
       - ws = workspace
+- `get_index.sh` - finds the monitor index for opening on current workspace
+  - to then use this navigate to where you created your opening script (if haven't run ./new.sh)
+  - go to the newly created file and enter the newly found index (thats it)
 
 ## Todo
 - get current monitor layout, and open the apps on the workspaces

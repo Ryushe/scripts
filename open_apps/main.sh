@@ -87,8 +87,11 @@ open_app() {
   if [[ $main_space -ne 0 || $left_space -ne 0 || $right_space -ne 0 ]] && [[ $move_app == true ]]; then
     echo "moved app $app to $side monitor"
     hyprctl dispatch movetoworkspace $space
+  elif [[ $main_space -eq 0 || $left_space -eq 0 || $right_space -eq 0 ]] && [[ $move_app == true ]]; then
+    hyprctl dispatch movetoworkspace $space
   fi
 }
+workspaceArray=($(hyprctl monitors -j | jq -r '.[].activeWorkspace.name'))
 
 echo "
 ########

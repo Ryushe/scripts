@@ -1,10 +1,13 @@
 #!/bin/bash
 
+monitor=($(hyprctl monitors -j | jq -r '.[].activeWorkspace.name'))
 # just add apps to the bottom like "app1" "app2"
 main_apps=()
 left_apps=()
 right_apps=()
-# set space to 0 for current space
+
+# ${monitor[i]} - find with get_index.sh (for to have apps open on current workspace)
+# ex: $monitor[0] - main mon
 main_space=3
 left_space=13
 right_space=23

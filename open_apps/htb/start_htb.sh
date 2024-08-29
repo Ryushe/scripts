@@ -1,8 +1,10 @@
 #!/bin/bash
 
+monitor=($(hyprctl monitors -j | jq -r '.[].activeWorkspace.name'))
 main_apps=("vmware")
 left_apps=("obs")
 right_apps=()
+# ${monitor[i]} - find with get_index.sh
 main_space=0
 left_space=12
 right_space=24
