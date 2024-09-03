@@ -9,6 +9,17 @@ right_apps=("obsidian obsidian://open?vault=language&file=japaneese")
 main_space=${monitor[0]}
 left_space=14
 right_space=24
+
+# dont worry about below
+if [[ "$1" =~ ^[0-9]+$ ]]; then
+  main_space="$1"
+fi
+if [[ -n $2 ]]; then
+  left_space="$2"
+fi
+if [[ -n $3 ]]; then
+  right_space="$3"
+fi
 script_dir="$(dirname "$(realpath "$0")")"
 echo "Script directory: $script_dir"
 files_list=($(ls "$script_dir" | grep "url.*\.txt"))

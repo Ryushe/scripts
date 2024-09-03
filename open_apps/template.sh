@@ -8,9 +8,24 @@ right_apps=()
 
 # ${monitor[i]} - find with get_index.sh (for to have apps open on current workspace)
 # ex: $monitor[0] - main mon
-main_space=3
-left_space=13
-right_space=23
+main_space=${monitor[0]}
+left_space=14
+right_space=24
+
+# dont worry about below
+if [ -n $1 ]; then
+  if [[ "$1" =~ ^[0-9]+$ ]]; then # if pos 1 is number
+    main_space="$1"
+  else
+    main_space=${monitor[0]}
+  fi
+fi
+if [ -n $2 ]; then
+  left_space="$2"
+fi
+if [ -n $3 ]; then
+  right_space="$3"
+fi
 script_dir="$(dirname "$(realpath "$0")")"
 echo "Script directory: $script_dir"
 files_list=($(ls "$script_dir" | grep "url.*\.txt"))

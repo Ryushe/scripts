@@ -30,6 +30,8 @@ apps[left]="${left_apps[@]}"
 apps[right]="${right_apps[@]}"
 
 main_sleep_time=.5
+default_browser="google-chrome-stable"
+# zen-browser (borked due to new proj), google-chrome-stable
 # You can now access the arrays and spaces as needed
 echo "
 ########
@@ -49,6 +51,13 @@ echo "Left space: $left_space"
 echo "Right space: $right_space"
 sleep $main_sleep_time
 
+zens_special_opener() { # dumb thing no work
+  zen-browser -P ${profile} --new-window "${urls[0]}" >/dev/null 2>&1 &
+  for ((i = 1; i < ${#urls[@]}; i++)); do
+    zen-browser -P ${profile} --new-tab "${urls[$i]}" >/dev/null 2>&1 &
+  done
+}
+
 open_app() {
   local app=$1
   local side=$2
@@ -56,12 +65,13 @@ open_app() {
   local urls=("$@")
   local move_app=true
 
-  if [[ -n "$profile" && "$app" == "google-chrome-stable" ]]; then # will check if profile, and if not then open chrome with default
+  if [[ "$app" == "google-chrome-stable" ]]; then
     echo "starting chrome with profile: ${profile}"
     $app --profile-directory="${profile}" --new-window "${urls[@]}" >/dev/null 2>&1 &
-  elif [ "$app" == "google-chrome-stable" ]; then
-    echo "starting chrome wins RAHHH"
-    $app --profile-directory="Default" --new-window "${urls[@]}" >/dev/null 2>&1 &
+  elif [ "$app" == "zen-browser" ]; then
+    echo "starting zen with profile: ${profile}"
+    zens_special_opener
+    # "$app" -P "$profile" --new-window "${urls[@]}"
   elif [[ $app ]]; then
     if pgrep -x "$app" >/dev/null; then
       echo "$app is already running."
@@ -98,19 +108,30 @@ echo "
 # Info #
 ######## "
 # handles chrome
+
 echo url_files = ${url_files[@]}
 for i in "${!url_files[@]}"; do
   file="${url_files[$i]}"
   if [[ -f "$file" ]]; then
     # file_contents=$(<"$file")
     mapfile -t file_contents <"$file"
-    read -r side profile_num <<<"${file_contents[0]}" # allows for profile on line 1
+    read -r side profile browser <<<"${file_contents[0]}" # allows for profile on line 1 and browser choice
     # side=${file_contents[0]}
-    if [[ -n "$profile_num" ]]; then
-      number="${profile_num//[!0-9]/}"
-      profile="Profile $number"
+    if [[ -z $browser ]]; then # if empty makes below default
+      browser=$default_browser
+    fi
+    if [[ -z $profile ]]; then
+      profile="Default"
+    fi
+    if [[ "$browser" == "google-chrome-stable" ]]; then
+      if [[ "$profile" != "Default" ]]; then
+        number="${profile//[!0-9]/}"
+        profile="Profile $number"
+        echo $profile
+      fi
     fi
     urls[$i]=$(printf "%s " "${file_contents[@]:1}")
+    echo "Browser = $browser"
     echo urls = ${urls[$i]}
     sleep $main_sleep_time
 
@@ -119,7 +140,7 @@ for i in "${!url_files[@]}"; do
 # Sides #
 ######### "
     sleep $main_sleep_time
-    open_app "google-chrome-stable" "$side" ${urls[$i]}
+    open_app $browser "$side" ${urls[$i]}
   else
     echo "no urls in file ${file}"
     echo "${urls[$i]}"

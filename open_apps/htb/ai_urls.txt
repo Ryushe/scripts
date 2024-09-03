@@ -1,0 +1,5 @@
+right profile1
+https://chatgpt.com/
+https://huggingface.co/chat/
+https://app.hackthebox.com/machines
+https://tryhackme.com/dashboard

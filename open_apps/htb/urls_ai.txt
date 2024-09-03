@@ -1,6 +1,0 @@
-right profile1
-https://chatgpt.com/
-https://tryhackme.com/
-https://chat.hackerai.co/
-https://huggingface.co/
-https://app.hackthebox.com/

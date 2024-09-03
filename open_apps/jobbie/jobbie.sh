@@ -1,13 +1,24 @@
 #!/bin/bash
 
+monitor=($(hyprctl monitors -j | jq -r '.[].activeWorkspace.name'))
 # just add apps to the bottom like "app1" "app2"
 main_apps=()
 left_apps=()
 right_apps=("obsidian obsidian://open?vault=jobs&file=To%20learn%20(based%20off%20jobs)")
 # set space to 0 for current space
-main_space=2
+main_space=${monitor[0]}
 left_space=12
 right_space=22
+
+if [[ "$1" =~ ^[0-9]+$ ]]; then
+  main_space="$1"
+fi
+if [[ -n $2 ]]; then
+  left_space="$2"
+fi
+if [[ -n $3 ]]; then
+  right_space="$3"
+fi
 script_dir="$(dirname "$(realpath "$0")")"
 echo "Script directory: $script_dir"
 files_list=($(ls "$script_dir" | grep "url.*\.txt"))

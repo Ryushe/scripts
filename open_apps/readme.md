@@ -22,6 +22,9 @@ or
 4. If wanting chrome tabs, make file with the name `url` anywhere in the name and end with .txt to have opened (optional)
   - each new file is a new chrome instance: `ex name: aiurls.txt`
   - see more on this below
+5. run with alias created 
+  - eg: `japaneese`
+  - eg: `htb current 11 24` (main, left, right) -> monitors
 
 ## making new chrome instances:  
 - every file that has `urls` and ends with `.txt` will be used 
@@ -70,8 +73,10 @@ https://google.com
   - go to the newly created file and enter the newly found index (thats it)
 
 ## Todo
-- get current monitor layout, and open the apps on the workspaces
-  - currently opens on workspaces predefined, but cant find it when nothing given
+- instead of script input, always call main.sh but have $1=thing to open 
+  - then positional main left right
+  - allows for easier customization & faster modification
+  - alias would look like main.sh japaneese (for jap config)
 
 author: Ryushe
 

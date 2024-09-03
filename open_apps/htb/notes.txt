@@ -1,1 +1,0 @@
-make run off txt file so can have multiple chrome instances no work rk
