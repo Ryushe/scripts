@@ -1,30 +1,37 @@
 #!/bin/bash
-group_1_urls=(
-  "https://www.linkedin.com/jobs/"
-  "https://huntr.co/track/boards/63f53af19ad96e002eb406e2/board"
-)
-group_2_urls=(
-  "https://chatgpt.com/"
-  "https://aiapply.co/dashboard/job-hub?popup=true"
-)
-group_3_urls=(
-  "https://drive.google.com/drive/u/0/folders/1kPUvvs3c1_-L1vE3p9okHGNFG6voOhSh" #resumes
-  "https://drive.google.com/drive/folders/1d3AG3iTjeDi4hFVZR170lu7j8IJV9hm5"     #templates
-)
 
-declare -A chrome_groups
-chrome_groups[group_1]="${group_1_urls[@]}"
-chrome_groups[group_2]="${group_2_urls[@]}"
-chrome_groups[group_3]="${group_3_urls[@]}"
-ordered_groups=("group_1" "group_2" "group_3")
-movewindows=("group_3")
+monitor=($(hyprctl monitors -j | jq -r '.[].activeWorkspace.name'))
+# just add apps to the bottom like "app1" "app2"
+main_apps=()
+left_apps=()
+right_apps=("obsidian obsidian://open?vault=jobs&file=To%20learn%20(based%20off%20jobs)")
+# set space to 0 for current space
+main_space=${monitor[0]}
+left_space=12
+right_space=22
 
-# godmode >/dev/null 2>&1 &
-for group in "${ordered_groups[@]}"; do
-  echo "$group:"
-  google-chrome-stable --profile-directory="Default" --new-window ${chrome_groups[$group]} &
-  sleep 0.2
-  if [[ "${movewindows[@]}" =~ "${group}" ]]; then
-    hyprctl dispatch movetoworkspace 22
-  fi
+if [[ "$1" =~ ^[0-9]+$ ]]; then
+  main_space="$1"
+fi
+if [[ -n $2 ]]; then
+  left_space="$2"
+fi
+if [[ -n $3 ]]; then
+  right_space="$3"
+fi
+script_dir="$(dirname "$(realpath "$0")")"
+echo "Script directory: $script_dir"
+files_list=($(ls "$script_dir" | grep "url.*\.txt"))
+echo "files: ${files_list[@]}"
+files=()
+for file in "${files_list[@]}"; do
+  files+=("${script_dir}/${file}")
 done
+
+#so i can send the apps
+apps_main_str="${main_apps[*]}"
+apps_left_str="${left_apps[*]}"
+apps_right_str="${right_apps[*]}"
+files_str="${files[*]}"
+
+~/scripts/open_apps/main.sh "$apps_main_str" "$apps_left_str" "$apps_right_str" $main_space $left_space $right_space "$files_str"

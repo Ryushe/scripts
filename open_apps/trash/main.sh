@@ -33,6 +33,20 @@ main_sleep_time=.5
 default_browser="google-chrome-stable"
 # zen-browser (borked due to new proj), google-chrome-stable
 # You can now access the arrays and spaces as needed
+current_path="$(dirname "$(realpath "$0")")"
+
+load_config() {
+  config_file="$1"
+  if [[ -f "$config_file" ]]; then
+    source "$config_file"
+  else
+    echo "Config file not found: $config_file"
+    exit 1
+  fi
+}
+
+config_file="$current_path/config.txt"
+
 echo "
 ########
 # Apps #

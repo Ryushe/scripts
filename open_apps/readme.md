@@ -14,9 +14,9 @@ Some of the ways I use this program:
 
 ## start:
 1. run 
-  - `./new.sh filename`
+  - `./new_opener.sh filename`
 or   
-2. `./new.sh filename foldername` - makes folder to put sh into 
+2. `./new_opener.sh filename foldername` - makes folder to put sh into 
   - helpful when want to use the url file feature
 3. open new script and edit the workspaces/apps to open
 4. If wanting chrome tabs, make file with the name `url` anywhere in the name and end with .txt to have opened (optional)
@@ -25,6 +25,8 @@ or
 5. run with alias created 
   - eg: `japaneese`
   - eg: `htb current 11 24` (main, left, right) -> monitors
+6. When editing the txt file made by new.sh, entering anything that isnt a number for the workspace will set it to the current monitor
+  - eg: `main_space=current`
 
 ## making new chrome instances:  
 - every file that has `urls` and ends with `.txt` will be used 
