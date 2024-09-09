@@ -29,11 +29,75 @@ load_config() {
   fi
 }
 
+# makes sure profile is good for zen
+zen_profile_handler() {
+  defaut_profile_names=("profile1")
+  if [[ $profile =~ ${defaut_profile_names[@]} ]]; then
+    profile="Default"
+  fi
+}
+
+# duplicate 1st url (zen opens 2 instances, will kill the 2nd instance)
 zens_special_opener() { # dumb thing no work
-  zen-browser -P ${profile} --new-window "${urls[0]}" >/dev/null 2>&1 &
-  for ((i = 1; i < ${#urls[@]}; i++)); do
-    zen-browser -P ${profile} --new-tab "${urls[$i]}" >/dev/null 2>&1 &
-  done
+  first_pid=""
+  urls=("${urls[0]}" "${urls[@]}")
+  if [ -z "$first_pid" ]; then
+    zen-browser -P ${profile} --new-window "${urls[@]}" >/dev/null 2>&1 &
+    first_pid=$!
+    echo "got pid $first_pid"
+
+    sleep 2
+    kill $first_pid
+    killed $first_pid
+    first_pid=""
+  else
+    first_pid=""
+  fi
+}
+
+check_if_two_words() {
+  local input="$1"
+  IFS=' ' read -r -a parts <<<"$input"
+
+  # Check the number of parts
+  if [ "${#parts[@]}" -eq 2 ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+is_obsidian() {
+  app_name=$(echo $app | awk '{print $1}')
+  app_link=$(echo $app | awk '{print $2}')
+  if [[ $app_name == "obsidian" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# checks where app installed (allows for flatpak)
+# flatpak, yay, pacman, etc
+check_app_installer() {
+  if check_if_two_words "$app"; then # allows for eg: obsidian url
+    grep_app=$(echo $app | awk '{print $1}')
+  else
+    grep_app=$app
+  fi
+  flatpak_app=$(flatpak list | grep "$grep_app" | awk '{print $2}')
+
+  echo "flatpak app: $flatpak_app"
+  if [ ! -z "$flatpak_app" ]; then
+    if is_obsidian; then
+      app="$flatpak_app $app_link"
+      echo "new app = $app"
+    else
+      app=$flatpak_app
+    fi
+  else
+    app=$app
+  fi
 }
 
 open_app() {
@@ -48,9 +112,12 @@ open_app() {
     $app --profile-directory="${profile}" --new-window "${urls[@]}" >/dev/null 2>&1 &
   elif [ "$app" == "zen-browser" ]; then
     echo "starting zen with profile: ${profile}"
+    zen_profile_handler
+    sleep 1 # dont go too fast
     zens_special_opener
     # "$app" -P "$profile" --new-window "${urls[@]}"
   elif [[ $app ]]; then
+    check_app_installer # flatpak, pacman, etc
     if pgrep -x "$app" >/dev/null; then
       echo "$app is already running."
       move_app=false
@@ -184,7 +251,7 @@ for i in "${!url_files[@]}"; do
     if [[ -z $profile ]]; then
       profile="Default"
     fi
-    if [[ "$browser" == "google-chrome-stable" ]]; then
+    if [[ "$browser" == "google-chrome-stable" ]]; then # chrome different than other browsers (zen works as well)
       if [[ "$profile" != "Default" ]]; then
         number="${profile//[!0-9]/}"
         profile="Profile $number"
@@ -213,3 +280,12 @@ for side in "${!apps[@]}"; do
   app="${apps[$side]}"
   open_app "$app" "$side"
 done
+
+echo "
+ ░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓██████████████▓▒░░▒▓███████▓▒░░▒▓█▓▒░      ░▒▓████████▓▒░▒▓████████▓▒░▒▓████████▓▒░▒▓███████▓▒░  
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓█▓▒░      ░▒▓██████▓▒░    ░▒▓█▓▒░   ░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ 
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
+ ░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░▒▓████████▓▒░  ░▒▓█▓▒░   ░▒▓████████▓▒░▒▓███████▓▒░  "
