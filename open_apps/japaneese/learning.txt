@@ -1,2 +1,0 @@
-right
-https://kotu.io/tests/pitchAccent/minimalPairs

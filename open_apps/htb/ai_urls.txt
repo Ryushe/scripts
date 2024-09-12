@@ -1,4 +1,4 @@
-right profile1
+right hacking 
 https://chatgpt.com/
 https://huggingface.co/chat/
 https://app.hackthebox.com/machines

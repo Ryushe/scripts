@@ -1,4 +1,4 @@
-right
+right Default google-chrome-stable
 https://drive.google.com/drive/u/0/folders/1kPUvvs3c1_-L1vE3p9okHGNFG6voOhSh
 https://drive.google.com/drive/folders/1d3AG3iTjeDi4hFVZR170lu7j8IJV9hm5
 https://drive.google.com/drive/folders/14050Q1Ha147UhE-bHCiSCaiBm_-FnExZ

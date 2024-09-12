@@ -1,21 +1,7 @@
 #!/bin/bash
-# apps_main_str="$1"
-# apps_left_str="$2"
-# apps_right_str="$3"
-# main_space="$4"
-# left_space="$5"
-# right_space="$6"
-# files_str="$7"
-
-# Convert strings back to arrays
-# IFS=' ' read -r -a main_apps <<<"$apps_main_str"
-# IFS=' ' read -r -a left_apps <<<"$apps_left_str"
-# IFS=' ' read -r -a right_apps <<<"$apps_right_str"
-# IFS=' ' read -r -a url_files <<<"$files_str"
-
 main_sleep_time=.5
-default_browser="google-chrome-stable"
-# zen-browser (borked due to new proj), google-chrome-stable
+default_browser="zen-browser"
+# zen-browser (borked due to new proj), google-chrome-stable, firefox
 # You can now access the arrays and spaces as needed
 local_dir="$(dirname "$(realpath "$0")")"
 
@@ -39,26 +25,19 @@ zen_profile_handler() {
 
 # duplicate 1st url (zen opens 2 instances, will kill the 2nd instance)
 zens_special_opener() { # dumb thing no work
-  first_pid=""
-  urls=("${urls[0]}" "${urls[@]}")
-  if [ -z "$first_pid" ]; then
-    zen-browser -P ${profile} --new-window "${urls[@]}" >/dev/null 2>&1 &
-    first_pid=$!
-    echo "got pid $first_pid"
-
-    sleep 2
-    kill $first_pid
-    killed $first_pid
-    first_pid=""
-  else
-    first_pid=""
-  fi
+  first_url=true
+  # urls="${urls[@]}"
+  $app -P ${profile} --new-window "${urls[0]}" >/dev/null 2>&1 &
+  sleep 1
+  for url in ${urls[@]:1}; do
+    $app -P ${profile} --new-tab "${url}" >/dev/null 2>&1 &
+  done
+  # $app -P ${profile} --new-tab "${urls[@]:1}" >/dev/null 2>&1 &
 }
 
 check_if_two_words() {
   local input="$1"
   IFS=' ' read -r -a parts <<<"$input"
-
   # Check the number of parts
   if [ "${#parts[@]}" -eq 2 ]; then
     return 0
@@ -67,13 +46,16 @@ check_if_two_words() {
   fi
 }
 
-is_obsidian() {
-  app_name=$(echo $app | awk '{print $1}')
-  app_link=$(echo $app | awk '{print $2}')
-  if [[ $app_name == "obsidian" ]]; then
-    return 0
+more_than_1_arg() {
+  local local_app=${1:-$app} # if no arg given asusme app
+  app_name=$(echo $local_app | awk '{print $1}')
+  shift 1
+  app_options=$(echo $app | awk '{print $2}') # has to be app for args
+  echo "$app_options"
+  if [[ -n $app_options ]]; then
+    app="$local_app $app_options"
   else
-    return 1
+    app=$local_app
   fi
 }
 
@@ -81,22 +63,22 @@ is_obsidian() {
 # flatpak, yay, pacman, etc
 check_app_installer() {
   if check_if_two_words "$app"; then # allows for eg: obsidian url
+
     grep_app=$(echo $app | awk '{print $1}')
   else
     grep_app=$app
   fi
   flatpak_app=$(flatpak list | grep "$grep_app" | awk '{print $2}')
-
-  echo "flatpak app: $flatpak_app"
-  if [ ! -z "$flatpak_app" ]; then
-    if is_obsidian; then
-      app="$flatpak_app $app_link"
-      echo "new app = $app"
-    else
-      app=$flatpak_app
-    fi
-  else
-    app=$app
+  if command -v "$app" >/dev/null 2>&1; then
+    :
+  elif [ ! -z "$flatpak_app" ]; then
+    echo "flatpak app: $flatpak_app"
+    more_than_1_arg "$flatpak_app"
+    # if more_than_1_arg; then
+    #   app="$flatpak_app $app_options"
+    # else
+    #   app=$flatpak_app
+    # fi
   fi
 }
 
@@ -110,14 +92,12 @@ open_app() {
   if [[ "$app" == "google-chrome-stable" ]]; then
     echo "starting chrome with profile: ${profile}"
     $app --profile-directory="${profile}" --new-window "${urls[@]}" >/dev/null 2>&1 &
-  elif [ "$app" == "zen-browser" ]; then
-    echo "starting zen with profile: ${profile}"
-    zen_profile_handler
-    sleep 1 # dont go too fast
+  elif [[ "$app" == "zen-browser" || "$app" == "firefox" ]]; then
+    echo "starting $app with profile: ${profile}"
     zens_special_opener
-    # "$app" -P "$profile" --new-window "${urls[@]}"
   elif [[ $app ]]; then
     check_app_installer # flatpak, pacman, etc
+    more_than_1_arg     ## allows for more than one arg
     if pgrep -x "$app" >/dev/null; then
       echo "$app is already running."
       move_app=false
@@ -282,10 +262,4 @@ for side in "${!apps[@]}"; do
 done
 
 echo "
- ░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓██████████████▓▒░░▒▓███████▓▒░░▒▓█▓▒░      ░▒▓████████▓▒░▒▓████████▓▒░▒▓████████▓▒░▒▓███████▓▒░  
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓█▓▒░      ░▒▓██████▓▒░    ░▒▓█▓▒░   ░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ 
-░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░         ░▒▓█▓▒░   ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ 
- ░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓████████▓▒░▒▓████████▓▒░  ░▒▓█▓▒░   ░▒▓████████▓▒░▒▓███████▓▒░  "
+Finished"
