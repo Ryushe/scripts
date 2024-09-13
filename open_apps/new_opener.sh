@@ -25,7 +25,7 @@ else
 fi
 
 if [[ -n "$1" ]]; then
-  echo "write alias ${1%.sh} to bashrc? [y/n]"
+  echo "write alias ${1%%.*} to bashrc? [y/n]"
   read write_to_bashrc
   if [[ "$write_to_bashrc" == "y" ]]; then
     if [[ -n $1 ]]; then
