@@ -1,8 +1,9 @@
 #!/bin/bash
 main_sleep_time=.5
-default_browser="zen-browser"
-# zen-browser (borked due to new proj), google-chrome-stable, firefox
-# You can now access the arrays and spaces as needed
+default_browser="zen"
+# zen-browser, google-chrome-stable, firefox, flatpak ze
+#  NOTE: if using flatpak zen please only use zen
+
 local_dir="$(dirname "$(realpath "$0")")"
 
 load_config() {
@@ -23,8 +24,9 @@ zen_profile_handler() {
   fi
 }
 
-# duplicate 1st url (zen opens 2 instances, will kill the 2nd instance)
-zens_special_opener() { # dumb thing no work
+zens_special_opener() {
+  echo "zenapp = $app"
+  echo "urls in zen ${urls[0]}"
   first_url=true
   # urls="${urls[@]}"
   $app -P ${profile} --new-window "${urls[0]}" >/dev/null 2>&1 &
@@ -46,6 +48,41 @@ check_if_two_words() {
   fi
 }
 
+# more_than_1_arg() {
+#   local local_app="${1:-$app}" # If no arg given, assume app
+
+#   # app_name=$(echo "$local_app" | awk '{print $1}') # Extract the application name
+#   IFS=' ' read -r -a app <<<"$local_app"
+#   app_name="${app[0]}"
+#   app_options="${app[@]:1}"
+
+#   echo "$app_options"
+
+#   if [[ -n $app_options ]]; then
+#     app="$app_name $app_options"
+#   else
+#     app=$app_name
+#   fi
+# }
+
+# more_than_1_arg() {
+#   local local_app="${1:-$app}" # If no arg given, assume app
+
+#   # app_name=$(echo "$local_app" | awk '{print $1}') # Extract the application name
+#   IFS=' ' read -r -a app <<<"$local_app"
+#   app_name="${app[0]}"
+#   app_options="${app[@]:1}"
+
+#   echo "$app_options"
+
+#   if [[ -n $app_options ]]; then
+#     app="$app_name $app_options"
+#   else
+#     app=$app_name
+#   fi
+# }
+
+# NOTE: I dont think this matters ( test to see if I need to handle the args or if it works normally )
 more_than_1_arg() {
   local local_app=${1:-$app} # if no arg given asusme app
   app_name=$(echo $local_app | awk '{print $1}')
@@ -53,9 +90,9 @@ more_than_1_arg() {
   app_options=$(echo $app | awk '{print $2}') # has to be app for args
   echo "$app_options"
   if [[ -n $app_options ]]; then
-    app="$local_app $app_options"
+    app="$app_name $app_options"
   else
-    app=$local_app
+    app=$app_name
   fi
 }
 
@@ -89,15 +126,16 @@ open_app() {
   local urls=("$@")
   local move_app=true
 
+  check_app_installer # flatpak, pacman, etc
+
   if [[ "$app" == "google-chrome-stable" ]]; then
     echo "starting chrome with profile: ${profile}"
     $app --profile-directory="${profile}" --new-window "${urls[@]}" >/dev/null 2>&1 &
-  elif [[ "$app" == "zen-browser" || "$app" == "firefox" ]]; then
+  elif [[ "$app" == *zen* || "$app" == "firefox" ]]; then
     echo "starting $app with profile: ${profile}"
     zens_special_opener
   elif [[ $app ]]; then
-    check_app_installer # flatpak, pacman, etc
-    more_than_1_arg     ## allows for more than one arg
+    more_than_1_arg ## allows for more than one arg
     if pgrep -x "$app" >/dev/null; then
       echo "$app is already running."
       move_app=false
@@ -239,7 +277,9 @@ for i in "${!url_files[@]}"; do
       fi
     fi
     urls[$i]=$(printf "%s " "${file_contents[@]:1}")
+
     echo "Browser = $browser"
+    echo "Browser profile: $profile"
     echo urls = ${urls[$i]}
     sleep $main_sleep_time
 
