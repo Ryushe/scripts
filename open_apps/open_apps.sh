@@ -1,6 +1,6 @@
 #!/bin/bash
 main_sleep_time=.5
-default_browser="zen"
+default_browser="firefox"
 # zen-browser, google-chrome-stable, firefox, flatpak ze
 #  NOTE: if using flatpak zen please only use zen
 

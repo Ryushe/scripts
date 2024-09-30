@@ -3,3 +3,4 @@ https://mail.google.com/mail/u/0/#inbox
 https://aiapply.co/dashboard/job-hub?popup=true
 https://huggingface.co/chat/
 https://chatgpt.com/
+https://ryushe.github.io/
