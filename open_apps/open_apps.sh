@@ -41,46 +41,12 @@ check_if_two_words() {
   local input="$1"
   IFS=' ' read -r -a parts <<<"$input"
   # Check the number of parts
-  if [ "${#parts[@]}" -eq 2 ]; then
+  if [ "${#parts[@]}" -gt 1 ]; then
     return 0
   else
     return 1
   fi
 }
-
-# more_than_1_arg() {
-#   local local_app="${1:-$app}" # If no arg given, assume app
-
-#   # app_name=$(echo "$local_app" | awk '{print $1}') # Extract the application name
-#   IFS=' ' read -r -a app <<<"$local_app"
-#   app_name="${app[0]}"
-#   app_options="${app[@]:1}"
-
-#   echo "$app_options"
-
-#   if [[ -n $app_options ]]; then
-#     app="$app_name $app_options"
-#   else
-#     app=$app_name
-#   fi
-# }
-
-# more_than_1_arg() {
-#   local local_app="${1:-$app}" # If no arg given, assume app
-
-#   # app_name=$(echo "$local_app" | awk '{print $1}') # Extract the application name
-#   IFS=' ' read -r -a app <<<"$local_app"
-#   app_name="${app[0]}"
-#   app_options="${app[@]:1}"
-
-#   echo "$app_options"
-
-#   if [[ -n $app_options ]]; then
-#     app="$app_name $app_options"
-#   else
-#     app=$app_name
-#   fi
-# }
 
 # NOTE: I dont think this matters ( test to see if I need to handle the args or if it works normally )
 more_than_1_arg() {
@@ -100,22 +66,23 @@ more_than_1_arg() {
 # flatpak, yay, pacman, etc
 check_app_installer() {
   if check_if_two_words "$app"; then # allows for eg: obsidian url
-
-    grep_app=$(echo $app | awk '{print $1}')
+    grep_app=$(echo "$app" | awk '{print $1}')
   else
     grep_app=$app
   fi
-  flatpak_app=$(flatpak list | grep "$grep_app" | awk '{print $2}')
-  if command -v "$app" >/dev/null 2>&1; then
-    :
-  elif [ ! -z "$flatpak_app" ]; then
-    echo "flatpak app: $flatpak_app"
-    more_than_1_arg "$flatpak_app"
-    # if more_than_1_arg; then
-    #   app="$flatpak_app $app_options"
-    # else
-    #   app=$flatpak_app
-    # fi
+
+  # flatpak_app=$(flatpak list | grep "$grep_app" | awk '{print $2}')
+  echo grep_app $grep_app
+  if [ -n "$grep_app" ]; then
+    flatpak_app=$(flatpak list --columns=application | grep "$grep_app" 2>/dev/null)
+    if [ -n "$flatpak_app" ]; then
+      echo "flatpak app: $flatpak_app"
+      more_than_1_arg "$flatpak_app"
+    elif command -v "$grep_app" >/dev/null 2>&1; then
+      return
+    else
+      echo "${grep_app} not found"
+    fi
   fi
 }
 
@@ -126,7 +93,7 @@ open_app() {
   local urls=("$@")
   local move_app=true
 
-  check_app_installer # flatpak, pacman, etc
+  # NOTE: this is causing obsidian to open flatseal
 
   if [[ "$app" == "google-chrome-stable" ]]; then
     echo "starting chrome with profile: ${profile}"
@@ -135,7 +102,8 @@ open_app() {
     echo "starting $app with profile: ${profile}"
     zens_special_opener
   elif [[ $app ]]; then
-    more_than_1_arg ## allows for more than one arg
+    check_app_installer # flatpak, pacman, etc
+    # more_than_1_arg ## allows for more than one arg
     if pgrep -x "$app" >/dev/null; then
       echo "$app is already running."
       move_app=false
