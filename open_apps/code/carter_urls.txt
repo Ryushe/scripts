@@ -1,2 +1,2 @@
-right google-chrome-stable carter
+right profile3 google-chrome-stable 
 https://mail.google.com/mail/u/0/#inbox

@@ -1,4 +1,4 @@
-right google-chrome-stable jaadyn
+right Default google-chrome-stable 
 https://wvc.instructure.com/courses/2508998/external_tools/18367
 https://www.wvc.edu/mywvc/
 
