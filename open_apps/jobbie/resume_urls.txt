@@ -1,7 +1,5 @@
 right Default google-chrome-stable
-https://docs.google.com/document/d/1PmxOQGC3tkdh2DrBeL0tTHpi1O2EwHAa8lJfyDWukEM/edit
-https://docs.google.com/document/d/1KsEdNlZe6hhAN6MZwEoKlPIO6scW5H-wtAthe2FIQVQ/edit
-https://drive.google.com/drive/u/0/folders/1kPUvvs3c1_-L1vE3p9okHGNFG6voOhSh
-https://drive.google.com/drive/folders/1d3AG3iTjeDi4hFVZR170lu7j8IJV9hm5
+https://www.overleaf.com/project/677dd382bd938cc536ec24de
+https://www.overleaf.com/project
 https://smallpdf.com/merge-pdf?mu=b5Vg&utm_campaign=20926214370&utm_source=google&utm_medium=cpc&gad_source=1&gclid=CjwKCAjw8rW2BhAgEiwAoRO5rD6bDVnKKUJHa9pWzm8XTeFca5f7TM0JxBWhLGmpyNeF2w6GSmxVpBoCmAAQAvD_BwE
 https://www.linkedin.com/in/jaadyn-humphries/
