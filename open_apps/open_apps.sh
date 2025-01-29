@@ -263,10 +263,14 @@ for i in "${!url_files[@]}"; do
   fi
 done
 
+# Open the apps
 for side in "${!apps[@]}"; do
   echo "side $side:"
-  app="${apps[$side]}"
-  open_app "$app" "$side"
+
+  for app in ${apps[$side]}; do
+    # app="${apps[$side]}"
+    open_app "$app" "$side"
+  done
 done
 
 echo "
