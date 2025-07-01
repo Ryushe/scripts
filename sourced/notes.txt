@@ -1,0 +1,1 @@
+all scripts in this dir are runnable in the cli linux
