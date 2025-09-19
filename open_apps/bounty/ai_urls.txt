@@ -2,8 +2,9 @@ right hacking
 https://mail.google.com/mail/u/0/#inbox
 https://chatgpt.com/
 https://huggingface.co/chat/
-https://www.bugcrowd.com/
+https://bugcrowd.com/engagements?category=bug_bounty
 https://hackerone.com/opportunities/all
 https://pentestgpt.ai/
 https://gtfobins.github.io/
 https://x.com/
+https://192.168.0.251:8006/
