@@ -30,8 +30,9 @@ case "$1" in
   ;;
 -n | --new)
   read -rp "new opener name: " name
+  name=$name.conf
   mkdir "$script_dir/$name"
-  cp "$script_dir/template.conf" "$script_dir/$name/$name.conf"
+  cp "$script_dir/template.conf" "$script_dir/$name/$name"
   command="alias $clone_name='$script_dir/open_apps.sh $script_dir/$name'"
   echo "$command" >>~/.bash_aliases
   ;;
